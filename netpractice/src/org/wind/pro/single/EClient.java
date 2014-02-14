@@ -1,4 +1,4 @@
-package org.wind.pro;
+package org.wind.pro.single;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.wind.pro.util.SocketIoUtil;
+import org.wind.pro.util.SocketIOUtil;
 
 public class EClient {
 	
@@ -44,11 +44,16 @@ public class EClient {
 	public void talkToServer(){
 		
 		String tempStr = null;
-		PrintWriter pw = SocketIoUtil.getWriter(socket);
+		PrintWriter pw = SocketIOUtil.getWriter(socket);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			while((tempStr = br.readLine() )!= null){
-				pw.write(tempStr);
+				//pw.write(tempStr);
+				pw.println(tempStr);
+				if("bye".equals(tempStr)){
+					pw.flush();
+					break;
+				}
 			}
 		} catch (IOException e) {
 			System.out.println("error in inputing client data!");
@@ -57,9 +62,10 @@ public class EClient {
 	}
 	
 	public static void main(String[] args) {
-		EClient eClient = new EClient();
-		eClient.talkToServer();
-		System.out.println("Client is created");
+		EClient client = new EClient();
+		System.out.println("Client One is ready!");
+		client.talkToServer();
 	}
+	
 
 }

@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class SocketIoUtil {
+public class SocketIOUtil {
 
 	public static PrintWriter getWriter(Socket socket){
 		PrintWriter pw = null;

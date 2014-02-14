@@ -1,11 +1,11 @@
-package org.wind.pro;
+package org.wind.pro.single;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.wind.pro.util.SocketIoUtil;
+import org.wind.pro.util.SocketIOUtil;
 
 public class EServer {
 	
@@ -16,6 +16,7 @@ public class EServer {
 	public EServer(){
 		try {
 			serverSocket = new ServerSocket(port);
+			System.out.println("The server is starting");
 		} catch (IOException e) {
 			System.out.println("error in initiating server!");
 			e.printStackTrace();
@@ -24,14 +25,33 @@ public class EServer {
 	
 	public void service(){
 		
-		String msg = null;
 		Socket socket = null;
 		
 		while(true){
-			try{
+			try {
 				socket = serverSocket.accept();
 				System.out.println("New connection accepted:"+socket.getInetAddress()+":"+socket.getPort());
-				BufferedReader bf = SocketIoUtil.getReader(socket);
+				Thread t1 = new Thread(new Handler(socket));
+				t1.run();
+			} catch (IOException e) {
+				System.out.println("error in accepting the connection from client");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	class Handler implements Runnable{
+		private Socket socket;
+		
+		public Handler(Socket socket){
+			this.socket =  socket;
+		}
+		
+		public void run() {
+			
+			String msg = null;
+			try{
+				BufferedReader bf = SocketIOUtil.getReader(socket);
 				while((msg = bf.readLine()) != null){
 					System.out.println(msg);
 					if("bye".equals(msg)){
@@ -53,15 +73,13 @@ public class EServer {
 			}
 		}
 		
-		
 	}
 	
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		EServer eServer = new EServer();
-		System.out.println("EServer is created!");
+		EServer server= new EServer();
+		server.service();
+		System.out.println("The Server is ready!");
 	}
+	
 
 }
